@@ -3,23 +3,30 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=courses.html">
-    <title>Total Workspace</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Total Workspace</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
+    <!-- 구글 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
-
-<body>
-    <p>이동 중... <a href="courses.html">클릭하세요</a></p>
-</body>
 
 <body>
 
     <!-- ===== 헤더 ===== -->
     <header class="app-header">
         <div class="header-left">
+            <a href="courses.html" class="back-btn" title="코스 목록으로">← 코스 목록</a>
             <button id="menuToggleBtn" class="hamburger-btn" title="목차">☰</button>
             <div class="header-title">
-                <span class="header-badge">🏆 실전 프로젝트</span>
-                <h1>포트폴리오 페이지 완성하기</h1>
+                <span id="courseBadge" class="header-badge">🏆 실전 프로젝트</span>
+                <h1 id="courseTitle">코스 로딩 중...</h1>
             </div>
         </div>
         <div class="header-right">
@@ -105,12 +112,15 @@
     <div id="completeScreen" class="complete-screen" style="display:none;">
         <div class="complete-box">
             <div class="complete-icon">🏆</div>
-            <h2>포트폴리오 완성!</h2>
-            <p>10단계 모든 미션을 클리어했습니다. 수고하셨습니다!</p>
+            <h2 id="completeTitle">코스 완성!</h2>
+            <p id="completeMsg">모든 미션을 클리어했습니다. 수고하셨습니다!</p>
             <div class="complete-preview">
-                <iframe id="completeFrame" title="Final Portfolio"></iframe>
+                <iframe id="completeFrame" title="Final Result"></iframe>
             </div>
-            <button id="restartBtn" class="action-btn success-btn">🔄 처음부터</button>
+            <div class="complete-actions">
+                <button id="restartBtn" class="action-btn">🔄 처음부터</button>
+                <a href="courses.html" class="action-btn success-btn">📚 다른 코스 선택</a>
+            </div>
         </div>
     </div>
 
@@ -122,6 +132,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
     <!-- 미션 데이터 + 앱 로직 -->
     <script src="missions.js"></script>
+    <script src="weather_missions.js"></script>
+    <script src="blog_missions.js"></script>
     <script src="app.js"></script>
 </body>
 

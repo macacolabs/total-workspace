@@ -1,12 +1,26 @@
 // =============================================
 // Total Workspace — app.js
-// 스텝별 미션 진행 및 이어받기 로직
+// URL 파라미터로 코스 선택, 스텝별 미션 진행
 // =============================================
+
+// URL ?course=xxx 파라미터 읽기
+const params = new URLSearchParams(location.search);
+const courseKey = params.get('course') || 'portfolio';
+
+// 코스 메타 정보
+const courseMeta = {
+    portfolio: { title: '포트폴리오 페이지 완성하기', badge: '🏆 실전 프로젝트', completeTitle: '포트폴리오 완성!', completeMsg: '10단계 모든 미션을 클리어했습니다. 수고하셨습니다!' },
+    shop: { title: '쇼핑몰 상품 페이지 만들기', badge: '🛒 쇼핑몰 UI', completeTitle: '쇼핑몰 UI 완성!', completeMsg: '10단계 모든 미션을 클리어했습니다. 수고하셨습니다!' },
+    weather: { title: '날씨 앱 UI 만들기', badge: '🌤️ 날씨 앱', completeTitle: '날씨 앱 완성!', completeMsg: '10단계 모든 미션을 클리어했습니다. 수고하셨습니다!' },
+    blog: { title: '블로그 레이아웃 만들기', badge: '📝 블로그', completeTitle: '블로그 완성!', completeMsg: '10단계 모든 미션을 클리어했습니다. 수고하셨습니다!' },
+};
+
+const meta = courseMeta[courseKey] || courseMeta.portfolio;
+const missions = (allCourses && allCourses[courseKey]) || allCourses.portfolio;
 
 let editor;
 let currentStep = 0;
 const completedSteps = new Set();
-// 각 스텝 완료 시 보존하는 코드 (다음 스텝으로 이어짐)
 const savedCodes = {};
 
 // ===== 미리보기 업데이트 =====
@@ -52,28 +66,20 @@ function loadStep(idx) {
     currentStep = idx;
     const m = missions[idx];
 
-    // 미션 패널 업데이트
     document.getElementById('missionTitle').textContent = `Step ${idx + 1}. ${m.title}`;
     document.getElementById('missionContent').innerHTML = m.description;
 
-    // 에디터 코드 결정:
-    // 이전에 저장된 코드가 있으면 사용, 없으면
-    // 첫 번째 스텝이면 startCode, 아니면 이전 스텝 solutionCode를 기반
     let code = '';
     if (savedCodes[idx] !== undefined) {
         code = savedCodes[idx];
     } else if (idx === 0) {
         code = m.startCode;
     } else {
-        // 이전 스텝의 완료 코드(savedCode)나 solutionCode 이어받기
         code = savedCodes[idx - 1] || missions[idx - 1].solutionCode;
     }
     editor.setValue(code);
 
-    // 힌트 상자 닫기
     document.getElementById('hintBox').style.display = 'none';
-
-    // 사이드바 & 진행 바 업데이트
     renderStepList();
     updateProgress();
     updatePreview();
@@ -81,6 +87,13 @@ function loadStep(idx) {
 
 // ===== DOM 준비 후 초기화 =====
 document.addEventListener('DOMContentLoaded', () => {
+    // 코스 메타 적용
+    if (document.getElementById('courseBadge'))
+        document.getElementById('courseBadge').textContent = meta.badge;
+    if (document.getElementById('courseTitle'))
+        document.getElementById('courseTitle').textContent = meta.title;
+    document.title = `🏆 ${meta.title} — Total Workspace`;
+
     // CodeMirror 초기화
     editor = CodeMirror.fromTextArea(document.getElementById('codeEditor'), {
         mode: 'htmlmixed',
@@ -142,7 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = m.validation(code);
 
         if (result.success) {
-            // 완료된 코드 저장 (다음 스텝에 이어짐)
             savedCodes[currentStep] = code;
             completedSteps.add(currentStep);
             renderStepList();
@@ -152,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const isLast = currentStep === missions.length - 1;
             if (isLast) {
-                // 모든 스텝 완료 → 완성 화면
                 setTimeout(() => showCompleteScreen(code), 600);
             } else {
                 setTimeout(() => {
@@ -192,6 +203,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ===== 완료 화면 =====
 function showCompleteScreen(finalCode) {
+    // 완료 텍스트 동적 업데이트
+    const titleEl = document.getElementById('completeTitle');
+    const msgEl = document.getElementById('completeMsg');
+    if (titleEl) titleEl.textContent = meta.completeTitle;
+    if (msgEl) msgEl.textContent = meta.completeMsg;
+
     const screen = document.getElementById('completeScreen');
     screen.style.display = 'flex';
     const frame = document.getElementById('completeFrame');
@@ -200,7 +217,6 @@ function showCompleteScreen(finalCode) {
     doc.write(finalCode);
     doc.close();
 
-    // 폭죽 연속 발사
     let count = 0;
     const timer = setInterval(() => {
         confetti({ particleCount: 80, spread: 100, origin: { x: Math.random(), y: 0.3 } });
