@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 실전 프로젝트 — 포트폴리오 완성</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
+    <!-- 구글 폰트 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+
+<body>
+
+    <!-- ===== 헤더 ===== -->
+    <header class="app-header">
+        <div class="header-left">
+            <button id="menuToggleBtn" class="hamburger-btn" title="목차">☰</button>
+            <div class="header-title">
+                <span class="header-badge">🏆 실전 프로젝트</span>
+                <h1>포트폴리오 페이지 완성하기</h1>
+            </div>
+        </div>
+        <div class="header-right">
+            <span id="stepLabel" class="step-label">Step 1 / 10</span>
+            <!-- 진행 바 -->
+            <div class="progress-wrap">
+                <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== 메인 컨테이너 ===== -->
+    <main class="app-container">
+
+        <!-- 좌측 사이드바: 스텝 목록 -->
+        <aside class="step-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>📋 단계 목록</h2>
+                <button id="menuCloseBtn" class="toggle-btn" title="닫기">✖</button>
+            </div>
+            <ul id="stepList" class="step-list">
+                <!-- JS로 동적 생성 -->
+            </ul>
+        </aside>
+
+        <!-- 중앙: 미션 설명 패널 -->
+        <section class="panel mission-panel">
+            <div class="mission-header">
+                <div class="mission-title-row">
+                    <h2 id="missionTitle">미션 설명</h2>
+                    <button id="hintBtn" class="hint-btn" title="힌트 보기">💡 힌트</button>
+                </div>
+                <div id="hintBox" class="hint-box" style="display:none;"></div>
+            </div>
+            <div id="missionContent" class="mission-content">
+                <!-- JS 동적 렌더링 -->
+            </div>
+
+            <!-- 목표 결과물 미리보기 모달 트리거 -->
+            <div class="mission-footer">
+                <button id="goalPreviewBtn" class="goal-btn">🎯 목표 확인</button>
+                <button id="showAnswerBtn" class="action-btn warning-btn">💡 정답 보기</button>
+            </div>
+        </section>
+
+        <!-- 중앙: 에디터 패널 -->
+        <section class="panel editor-panel">
+            <div class="panel-header">
+                <h2>📝 코드 에디터</h2>
+                <div class="editor-actions">
+                    <button id="checkBtn" class="action-btn success-btn">🚀 완료 확인</button>
+                    <button id="copyBtn" class="action-btn">📋 복사</button>
+                </div>
+            </div>
+            <textarea id="codeEditor"></textarea>
+        </section>
+
+        <!-- 우측: 실시간 미리보기 -->
+        <section class="panel preview-panel">
+            <div class="panel-header">
+                <h2>👀 내 결과물</h2>
+                <button id="refreshBtn" class="action-btn" title="새로고침">🔄</button>
+            </div>
+            <div class="iframe-container">
+                <iframe id="previewFrame" title="Live Preview"></iframe>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== 목표 미리보기 모달 ===== -->
+    <div id="goalModal" class="modal-overlay" style="display:none;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>🎯 이 단계 목표 결과물</h3>
+                <button id="closeModal" class="modal-close">✖</button>
+            </div>
+            <iframe id="goalFrame" class="goal-frame" title="Goal Preview"></iframe>
+        </div>
+    </div>
+
+    <!-- ===== 완료 화면 ===== -->
+    <div id="completeScreen" class="complete-screen" style="display:none;">
+        <div class="complete-box">
+            <div class="complete-icon">🏆</div>
+            <h2>포트폴리오 완성!</h2>
+            <p>10단계 모든 미션을 클리어했습니다. 수고하셨습니다!</p>
+            <div class="complete-preview">
+                <iframe id="completeFrame" title="Final Portfolio"></iframe>
+            </div>
+            <button id="restartBtn" class="action-btn success-btn">🔄 처음부터</button>
+        </div>
+    </div>
+
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+    <!-- 미션 데이터 + 앱 로직 -->
+    <script src="missions.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
